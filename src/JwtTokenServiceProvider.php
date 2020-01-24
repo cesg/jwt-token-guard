@@ -15,12 +15,14 @@ class JwtTokenServiceProvider extends ServiceProvider
     {
         Auth::resolved(function ($auth) {
             $auth->extend('jwt', function ($app, $name, array $config) {
-                return tap(new JwtTokenGuard(
+                $guard = new JwtTokenGuard(
                     Auth::createUserProvider($config['provider']),
+                    $this->app['request'],
                     $config['key'] ?? $this->app['config']->get('app.key')
-                ), function (JwtTokenGuard $guard) {
-                    $this->app->refresh('request', $guard, 'setRequest');
-                });
+                );
+                $this->app->refresh('request', $guard, 'setRequest');
+
+                return $guard;
             });
         });
     }

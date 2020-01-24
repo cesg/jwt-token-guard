@@ -2,7 +2,7 @@
     "name": "cesg/jwt-token-guard",
     "description": "Laravel simple JWT token guard",
     "type": "library",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "require": {
         "php": "^7.2",
         "illuminate/support": "^6.0",

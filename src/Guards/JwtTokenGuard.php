@@ -15,9 +15,10 @@ class JwtTokenGuard implements Guard
     protected $request;
     protected $key;
 
-    public function __construct(UserProvider $provider, string $key)
+    public function __construct(UserProvider $provider, Request $request, string $key)
     {
         $this->provider = $provider;
+        $this->request = $request;
         $this->key = $key;
     }
 
@@ -50,7 +51,7 @@ class JwtTokenGuard implements Guard
     public function validate(array $credentials = [])
     {
         return !is_null(
-            (new static($this->getProvider(), $this->key))->setRequest($credentials['request'])->user()
+            (new static($this->getProvider(), $credentials['request'], $this->key))->user()
         );
     }
 

@@ -23,8 +23,7 @@ class JwtTokenGuardTest extends TestCase
         });
         $request = Request::create('/');
         $request->headers->set('Authorization', 'Bearer '.$user->getJwtTokenAttribute());
-        $guard = new JwtTokenGuard($userProvider, 'Som3RandonKey_');
-        $guard->setRequest($request);
+        $guard = new JwtTokenGuard($userProvider, $request, 'Som3RandonKey_');
 
         $this->assertEquals($user, $guard->user());
     }
