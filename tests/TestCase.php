@@ -35,7 +35,7 @@ class User extends \Illuminate\Foundation\Auth\User
     public function getJwtTokenAttribute()
     {
         return JWT::encode([
-            'sub' => $this->id,
+            'sub' => $this->getAuthIdentifier(),
             'iss' => 'testing',
             'iat' => now()->timestamp,
         ], 'Som3RandonKey_');

@@ -14,6 +14,7 @@ class JwtTokenGuard implements Guard
 
     protected $request;
     protected $key;
+    protected $jwt;
 
     public function __construct(UserProvider $provider, Request $request, string $key)
     {
@@ -34,7 +35,7 @@ class JwtTokenGuard implements Guard
             return;
         }
 
-        $jwt = JWT::decode($token, $this->key, ['HS256']);
+        $jwt = $this->decodeJwt($token);
 
         return $this->user = $this->getProvider()
             ->retrieveById(
@@ -60,5 +61,10 @@ class JwtTokenGuard implements Guard
         $this->request = $request;
 
         return $this;
+    }
+
+    private function decodeJwt(string $token): ?object
+    {
+        return $this->jwt = JWT::decode($token, $this->key, ['HS256']);
     }
 }
