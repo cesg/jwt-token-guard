@@ -2,6 +2,9 @@
 Laravel simple JWT token guard
 
 # Install
+```sh
+composer require cesg/jwt-token-guard
+```
 
 # Configure
 Configure the auth driver
@@ -26,7 +29,7 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 protected function authenticated(Request $request, $user)
 {
     $jwt = JWT::encode([
-        'sub' => $user->id,
+        'sub' => $user->getAuthIdentifier(),
         'iss' => config('app.name'),
         'iat' => now()->timestamp,
     ], config('app.key'));
