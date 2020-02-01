@@ -12,6 +12,8 @@ use Orchestra\Testbench\TestCase as TestbenchTestCase;
  */
 class TestCase extends TestbenchTestCase
 {
+    protected $jwtSecretKey = '46cbfc4212aaeb4d7607fe8b5d54ab253f7c3b0965f1234d4260d5f22c54097d2b49c3cd05d35f2c6b15271ff6c089059e50974af39fefbebfcaf8f5326fbcab';
+
     protected function getPackageProviders($app)
     {
         return [JwtTokenServiceProvider::class];
@@ -23,21 +25,25 @@ class TestCase extends TestbenchTestCase
         $app['config']->set('auth.guards.api', [
             'driver' => 'jwt',
             'provider' => 'users',
-            'key' => 'Som3RandonKey_',
+            'key' => $this->jwtSecretKey,
         ]);
     }
 }
 
-class User extends \Illuminate\Foundation\Auth\User
+trait HasJwtTokenAttribute
 {
-    protected $guarded = [];
-
     public function getJwtTokenAttribute()
     {
         return JWT::encode([
             'sub' => $this->getAuthIdentifier(),
             'iss' => 'testing',
             'iat' => now()->timestamp,
-        ], 'Som3RandonKey_');
+        ], config('auth.guards.api.key'));
     }
+}
+
+class User extends \Illuminate\Foundation\Auth\User
+{
+    use HasJwtTokenAttribute;
+    protected $guarded = [];
 }

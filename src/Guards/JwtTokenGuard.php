@@ -29,19 +29,26 @@ class JwtTokenGuard implements Guard
             return $this->user;
         }
 
-        $token = $this->request->bearerToken();
-
-        if (\is_null($token)) {
-            return;
+        $jwt = $this->decodeRequestJwt();
+        if (is_null($jwt)) {
+            return null;
         }
-
-        $jwt = $this->decodeJwt($token);
 
         return $this->user = $this->getProvider()
             ->retrieveById(
                 $jwt->sub
             )
         ;
+    }
+
+    /**
+     * Determine if the current user is authenticated.
+     *
+     * @return bool
+     */
+    public function check()
+    {
+        return !is_null($this->user());
     }
 
     /**
@@ -63,8 +70,18 @@ class JwtTokenGuard implements Guard
         return $this;
     }
 
-    private function decodeJwt(string $token): ?object
+    private function decodeRequestJwt(): ?object
     {
+        if (!\is_null($this->jwt)) {
+            return $this->jwt;
+        }
+
+        $token = $this->request->bearerToken();
+
+        if (is_null($token)) {
+            return null;
+        }
+
         return $this->jwt = JWT::decode($token, $this->key, ['HS256']);
     }
 }
