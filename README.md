@@ -13,7 +13,7 @@ Configure the auth driver
 'api' => [
     'driver' => 'jwt',
     'provider' => 'users',
-    'key' => env('JWT_SECRET_KEY'),
+    'key' => env('JWT_SECRET_KEY', \md5(env('APP_NAME'))),
 ],
 ```
 
