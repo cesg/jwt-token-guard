@@ -3,6 +3,7 @@
 namespace Cesg\Jwt;
 
 use Cesg\Jwt\Guards\JwtTokenGuard;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,14 +14,14 @@ class JwtTokenServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Auth::resolved(function ($auth) {
-            $auth->extend('jwt', function ($app, $name, array $config) {
+        Auth::resolved(function (AuthManager $auth) {
+            $auth->extend('jwt', function ($app, $name, array $config) use ($auth) {
                 $guard = new JwtTokenGuard(
-                    Auth::createUserProvider($config['provider']),
-                    $this->app['request'],
-                    $config['key'] ?? $this->app['config']->get('app.key')
+                    $auth->createUserProvider($config['provider']),
+                    $app['request'],
+                    $config['key']
                 );
-                $this->app->refresh('request', $guard, 'setRequest');
+                $app->refresh('request', $guard, 'setRequest');
 
                 return $guard;
             });

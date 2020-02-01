@@ -13,18 +13,24 @@ Configure the auth driver
 'api' => [
     'driver' => 'jwt',
     'provider' => 'users',
-    'key' => env('APP_KEY'),
+    'key' => env('JWT_SECRET_KEY'),
 ],
 ```
 
+Example secret key
+
+```sh
+openssl rand -hex 64
+```
+
 # Usage
-## Frontend
+## Javascript
 ```js
 const token = '';
 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 ```
 
-## Backend
+## Laravel
 ```php
 protected function authenticated(Request $request, $user)
 {
@@ -32,7 +38,7 @@ protected function authenticated(Request $request, $user)
         'sub' => $user->getAuthIdentifier(),
         'iss' => config('app.name'),
         'iat' => now()->timestamp,
-    ], config('app.key'));
+    ], config('auth.guards.api.key'));
 
     session(\compact('jwt'));
 }
