@@ -29,7 +29,7 @@ class JwtTokenGuard implements Guard
             return $this->user;
         }
 
-        $jwt = $this->decodeRequestJwt();
+        $jwt = $this->getJwt();
         if (is_null($jwt)) {
             return null;
         }
@@ -70,18 +70,23 @@ class JwtTokenGuard implements Guard
         return $this;
     }
 
-    private function decodeRequestJwt(): ?object
+    public function getJwt(): object
     {
-        if (!\is_null($this->jwt)) {
+        if (!is_null($this->jwt)) {
             return $this->jwt;
         }
 
+        return $this->jwt = $this->decodeRequestJwt();
+    }
+
+    private function decodeRequestJwt(): ?object
+    {
         $token = $this->request->bearerToken();
 
         if (is_null($token)) {
             return null;
         }
 
-        return $this->jwt = JWT::decode($token, $this->key, ['HS256']);
+        return JWT::decode($token, $this->key, ['HS256']);
     }
 }

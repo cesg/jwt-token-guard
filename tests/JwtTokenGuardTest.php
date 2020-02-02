@@ -22,9 +22,11 @@ class JwtTokenGuardTest extends TestCase
             $mock->shouldReceive('retrieveById')->andReturn($user);
         });
         $request = Request::create('/');
-        $request->headers->set('Authorization', 'Bearer '.$user->getJwtTokenAttribute());
+        $request->headers->set('Authorization', 'Bearer '.$user->jwt_token);
         $guard = new JwtTokenGuard($userProvider, $request, config('auth.guards.api.key'));
 
         $this->assertEquals($user, $guard->user());
+        $this->assertNotNull($guard->getJwt());
+        $this->assertEquals($user->id, $guard->getJwt()->sub);
     }
 }
