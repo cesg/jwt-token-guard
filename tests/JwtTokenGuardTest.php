@@ -13,12 +13,12 @@ use Illuminate\Http\Request;
 class JwtTokenGuardTest extends TestCase
 {
     /** @test */
-    public function testUserCanBePulledViaBearerToken()
+    public function test_user_can_be_pulled_via_bearer_token(): void
     {
         $user = new User(['id' => 1]);
 
         /** @var \Illuminate\Contracts\Auth\UserProvider $userProvider */
-        $userProvider = $this->partialMock(UserProvider::class, function ($mock) use ($user) {
+        $userProvider = $this->partialMock(UserProvider::class, function ($mock) use ($user): void {
             $mock->shouldReceive('retrieveById')->andReturn($user);
         });
         $request = Request::create('/');

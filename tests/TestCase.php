@@ -19,7 +19,7 @@ class TestCase extends TestbenchTestCase
         return [JwtTokenServiceProvider::class];
     }
 
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
         $app['config']->set('auth.providers.users.model', User::class);
         $app['config']->set('auth.guards.api', [

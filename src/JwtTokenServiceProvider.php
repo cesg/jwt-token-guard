@@ -12,9 +12,9 @@ class JwtTokenServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register()
+    public function register(): void
     {
-        Auth::resolved(function (AuthManager $auth) {
+        Auth::resolved(function (AuthManager $auth): void {
             $auth->extend('jwt', function ($app, $name, array $config) use ($auth) {
                 $guard = new JwtTokenGuard(
                     $auth->createUserProvider($config['provider']),

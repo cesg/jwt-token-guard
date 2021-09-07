@@ -25,12 +25,12 @@ class JwtTokenGuard implements Guard
 
     public function user()
     {
-        if (!\is_null($this->user)) {
+        if (null !== $this->user) {
             return $this->user;
         }
 
         $jwt = $this->getJwt();
-        if (is_null($jwt)) {
+        if (null === $jwt) {
             return null;
         }
 
@@ -48,7 +48,7 @@ class JwtTokenGuard implements Guard
      */
     public function check()
     {
-        return !is_null($this->user());
+        return null !== $this->user();
     }
 
     /**
@@ -58,9 +58,7 @@ class JwtTokenGuard implements Guard
      */
     public function validate(array $credentials = [])
     {
-        return !is_null(
-            (new static($this->getProvider(), $credentials['request'], $this->key))->user()
-        );
+        return null !== (new static($this->getProvider(), $credentials['request'], $this->key))->user();
     }
 
     public function setRequest(Request $request): self
@@ -72,7 +70,7 @@ class JwtTokenGuard implements Guard
 
     public function getJwt(): object
     {
-        if (!is_null($this->jwt)) {
+        if (null !== $this->jwt) {
             return $this->jwt;
         }
 
@@ -83,7 +81,7 @@ class JwtTokenGuard implements Guard
     {
         $token = $this->request->bearerToken();
 
-        if (is_null($token)) {
+        if (null === $token) {
             return null;
         }
 
